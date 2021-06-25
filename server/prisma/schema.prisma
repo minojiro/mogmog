@@ -12,3 +12,18 @@ model Task {
   label String
   done  Boolean @default(false)
 }
+
+model Product {
+  id    Int     @id @default(autoincrement())
+  name String
+  amazonUrl String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  coverImageUrl String
+  nutritionImageUrl String
+}
+
+enum ProductImageType {
+  COVER
+  NUTRITION
+}
