@@ -1,0 +1,11 @@
+version: '3.0'
+
+services:
+  db:
+    image: postgres:11.1-alpine
+    environment:
+      - POSTGRES_USER=pg
+      - POSTGRES_PASSWORD=pg
+      - POSTGRES_DB=app
+    ports:
+      - '5434:5432'
