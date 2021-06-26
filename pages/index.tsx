@@ -1,20 +1,27 @@
-import Head from 'next/head'
-import Link from 'next/link'
-import Header from '~/components/Header'
-import Pagenation from '~/components/Pagenation'
-import ProductList from '~/components/ProductList'
-import InputSearchText from '~/components/InputSearchText'
+import { apiClient } from '~/utils/apiClient'
 import { Product } from '$/types'
+import { useDebounce } from 'use-debounce'
+import { useEffect, useState } from 'react'
+import Head from 'next/head'
+import Header from '~/components/Header'
+import InputSearchText from '~/components/InputSearchText'
+import ProductList from '~/components/ProductList'
+import useAspidaSWR from '@aspida/swr'
 
 const Home = () => {
-  const products: Product[] = Array.from({ length: 10 }, (_, id) => ({
-    id,
-    name: 'hoge',
-    nutritionImageUrl: '//placehold.jp/100x100.png',
-    amazonUrl: 'https://www.amazon.co.jp/dp/B082W3LBSK',
-    coverImageUrl: '//placehold.jp/100x100.png',
-    createdAt: '2022-01-23 12:12:12'
-  }))
+  const { data: products } = useAspidaSWR(apiClient.products)
+  const [searchedProducts, setSearchedProducts] = useState<Product[]>([])
+  const [searchWord, setSearchWord] = useState('')
+  const [debounceSearchWord] = useDebounce(searchWord, 200)
+
+  useEffect(() => {
+    apiClient.products
+      .get({ query: { q: debounceSearchWord } })
+      .then(({ body }) => {
+        setSearchedProducts(body)
+      })
+  }, [debounceSearchWord])
+
   return (
     <div className="container">
       <Head>
@@ -24,9 +31,19 @@ const Home = () => {
       <main>
         <Header />
         <div className="mb-5">
-          <InputSearchText />
+          <InputSearchText
+            onChange={(e) => setSearchWord(e.target.value)}
+            value={searchWord}
+          />
         </div>
-        <ProductList products={products} />
+        {debounceSearchWord !== '' ? (
+          <ProductList
+            products={searchedProducts}
+            title={`${debounceSearchWord} での検索結果`}
+          />
+        ) : (
+          products && <ProductList products={products} title="新着一覧" />
+        )}
       </main>
     </div>
   )

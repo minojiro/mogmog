@@ -1,7 +1,13 @@
 import { Product } from '$/types'
 import Link from 'next/link'
 
-const ProductList = ({ products }: { products: Product[] }) => {
+const ProductList = ({
+  products,
+  title
+}: {
+  products: Product[]
+  title: string
+}) => {
   const renderProduct = (product: Product) => (
     <li key={product.id}>
       <Link href={`/products/${product.id}`}>
@@ -16,7 +22,7 @@ const ProductList = ({ products }: { products: Product[] }) => {
   )
   return (
     <ul className="panel">
-      <p className="panel-heading">新着一覧</p>
+      <p className="panel-heading">{title}</p>
       {products.map(renderProduct)}
     </ul>
   )

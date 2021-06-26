@@ -1,8 +1,8 @@
 import { Product } from '$/types'
-import React from 'react'
+import React, { InputHTMLAttributes } from 'react'
 
-const InputSearchText = () => {
-  return <input type="text" className="input" placeholder="食品名" />
+const InputSearchText = (props: InputHTMLAttributes<HTMLInputElement>) => {
+  return <input type="text" className="input" placeholder="食品名" {...props} />
 }
 
 export default InputSearchText

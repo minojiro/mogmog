@@ -1,25 +1,39 @@
-import Head from 'next/head'
-import { useCallback, useState } from 'react'
-import useAspidaSWR from '@aspida/swr'
 import { apiClient } from '~/utils/apiClient'
-import type { Task } from '$prisma/client'
-import type { FormEvent, ChangeEvent } from 'react'
-import ProductForm from '~/components/ProductForm'
+import { FormProduct } from '$/types'
+import { useCallback, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import Head from 'next/head'
 import Header from '~/components/Header'
-import { Product } from '$/types'
+import ProductForm from '~/components/ProductForm'
+import useAspidaSWR from '@aspida/swr'
 
 const ProductEdit = () => {
-  const [product, setProduct] = useState<Product>({
-    id: 123,
+  const [formProduct, setFormProduct] = useState<FormProduct>({
     name: '',
     nutritionImageUrl: '//placehold.jp/100x100.png',
     amazonUrl: '',
-    coverImageUrl: '//placehold.jp/100x100.png',
-    createdAt: '2022-01-23 12:12:12'
+    coverImageUrl: '//placehold.jp/100x100.png'
   })
-  const onSubmit = () => {
-    console.log(product)
-  }
+
+  const router = useRouter()
+  const productId = ~~(router.query.productId as string)
+  const { data: initialProduct, revalidate } = useAspidaSWR(
+    apiClient.products._productId(productId)
+  )
+
+  useEffect(() => {
+    if (initialProduct) {
+      setFormProduct(initialProduct)
+    }
+  }, [initialProduct])
+
+  const onSubmit = useCallback(async () => {
+    await apiClient.products._productId(productId).put({
+      body: formProduct
+    })
+    await revalidate()
+    router.push(`/products/${productId}`)
+  }, [formProduct, productId])
   return (
     <div className="container">
       <Head>
@@ -27,8 +41,8 @@ const ProductEdit = () => {
       </Head>
       <Header />
       <ProductForm
-        product={product}
-        onChange={setProduct}
+        formProduct={formProduct}
+        onChange={setFormProduct}
         onSubmit={onSubmit}
       />
     </div>

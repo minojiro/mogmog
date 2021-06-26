@@ -2,12 +2,9 @@ import { Product, FormProduct } from '$/types'
 
 export type Methods = {
   get: {
-    query?: {
-      q?: string
-    }
-    resBody: Product[]
+    resBody: Product
   }
-  post: {
+  put: {
     reqBody: FormProduct
     resBody: Product
   }

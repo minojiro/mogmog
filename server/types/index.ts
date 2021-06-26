@@ -16,5 +16,9 @@ export type Product = {
   nutritionImageUrl: string
   createdAt: string
 }
+export type FormProduct = Pick<
+  Product,
+  'name' | 'amazonUrl' | 'coverImageUrl' | 'nutritionImageUrl'
+>
 
 export type ProductImageType = 'COVER' | 'NUTRITION'

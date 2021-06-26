@@ -1,20 +1,20 @@
-import { Product } from '$/types'
+import { FormProduct } from '$/types'
 import React from 'react'
 
 import ImageUploader from '~/components/ImageUploader'
 
 const ProductForm = ({
-  product,
+  formProduct,
   onChange,
   onSubmit
 }: {
-  product: Product
-  onChange: (product: Product) => void
+  formProduct: FormProduct
+  onChange: (formProduct: FormProduct) => void
   onSubmit: () => void
 }) => {
-  const updatePartial = (partial: Partial<Product>) => {
+  const updatePartial = (partial: Partial<FormProduct>) => {
     onChange({
-      ...product,
+      ...formProduct,
       ...partial
     })
   }
@@ -31,7 +31,7 @@ const ProductForm = ({
           <input
             type="text"
             className="input"
-            value={product.name}
+            value={formProduct.name}
             onChange={(e) => updatePartial({ name: e.target.value })}
             placeholder="name"
           />
@@ -43,7 +43,7 @@ const ProductForm = ({
           <input
             type="text"
             className="input"
-            value={product.amazonUrl}
+            value={formProduct.amazonUrl}
             onChange={(e) => updatePartial({ amazonUrl: e.target.value })}
             placeholder="amazonUrl"
           />
